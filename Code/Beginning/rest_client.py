@@ -23,47 +23,48 @@ def main():
 def get_language(user_text):
     try:
         jsonBody = {
-            "Documents":[
+            "Documents": [
                 {
-                    "id":1,
-                    "text":user_text
+                    "id": 1,
+                    "text": user_text
                 },
                 {
-                    "id":2,
-                    "text":user_text.split(' ')[:-1]
+                    "id": 2,
+                    "text": ''.join(user_text.split(' ')[:-1])
                 }
             ]
         }
 
         print(json.dumps(jsonBody, indent=2))
 
-        uri = ai_endpoint.rstrip('/').replace('https://','')
-        print(uri)
-        conn = http.client.HTTPConnection(uri)
+        uri = ai_endpoint.rstrip('/').replace('https://', '')
+        conn = http.client.HTTPSConnection(uri)
+
 
         headers = {
             'Content-Type': 'application/json',
             'Ocp-Apim-Subscription-Key': ai_key
         }
 
-        conn.request('POST', '/text/analytics/v3.1/languages?', str(jsonBody).encode('utf-8'), headers)
+        conn.request("POST", "/text/analytics/v3.1/languages?", str(jsonBody).encode('utf-8'), headers)
 
         response = conn.getresponse()
-        data = response.read()
+        data = response.read().decode('utf-8')
 
         if response.status == 200:
             results = json.loads(data)
             print(json.dumps(results, indent=2))
+            i=1
 
             for document in results['documents']:
-                print(" The text is written in : ", document['detectedLanguage']['name'])
-
+                print(f"The number {i} text is written in : {document['detectedLanguage']['name']}")
+                i += 1
         else:
             print(data)
         conn.close()
 
     except Exception as e:
-        print('Something went wrong when translating your text!!')
+        print('Something went wrong detecting the language of your your text!!')
 
 
 if __name__ == '__main__':
