@@ -23,7 +23,7 @@ def main():
 def get_language(user_text):
     try:
         jsonBody = {
-            "Documents": [
+            "documents": [
                 {
                     "id": 1,
                     "text": user_text
@@ -53,7 +53,7 @@ def get_language(user_text):
 
         if response.status == 200:
             results = json.loads(data)
-            print(json.dumps(results, indent=2))
+            # print(json.dumps(results, indent=2))
             i=1
 
             for document in results['documents']:
